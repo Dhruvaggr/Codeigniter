@@ -1,4 +1,6 @@
 # Codeigniter
+# url to open project if wamp/xampp is on:
+# localhost/codeigniter2/index.php/create/index
 
  MVC Application(CRUD OPERATION USING -
  1. Frontend- 
