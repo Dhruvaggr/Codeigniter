@@ -19,6 +19,51 @@
         return $this->db->insert_id(); //insert_id() is the inbulit fxn which which gives id and returns it to the fxn call.
     }
 
+    public function getfilterdata($filterOption)
+    {
+      // echo $filterOption;die;
+      if($filterOption==='All')
+      {
+        $query=$this->db->get('person');
+        $rows= $query->result_array();
+        //  echo"<pre>";
+        // print_r( $query->result_array());die;
+        return $rows;
+      }
+      
+
+        $query=$this->db->where('country',$filterOption)
+        
+            ->get('person');
+            $rows= $query->result_array();
+            // echo"<pre>";
+            // print_r($rows);
+
+
+            // if(!empty($rows))
+            // {
+            //   foreach($rows as $key=>$value)
+            //   {
+            //     $rows[$key]=$value; 
+            //     // print_r($rows);
+            //   }
+              
+            // }
+            
+            return $rows;
+           
+          //   echo"<pre>";
+          //  print_r($query->result_array());die;
+      
+      //  $items=array();
+      //      foreach($rows as $row)
+      //      {
+      //       $items[]=$row['country'];
+      //      }
+      //     //  print_r($items);
+      //      return $items;
+    }
+
     public function fetchData()
     {
      $query= $this->db->get('person');
@@ -66,7 +111,7 @@
     public function upload($data)
     {
 
-      echo "Dhruv Gupta ";
+      
       $y=$data['file_name'];
         // echo $y;die;
         $data1=array(
@@ -77,4 +122,65 @@
 
 
     }
+
+    public function searchData($search,$start,$length)
+    {
+      
+   
+      $this->db->select('*');
+      $this->db->from('person'); 
+
+      if(!empty($search))
+      {
+      $this->db->group_start();
+        $this->db->like('name',$search);
+        $this->db->or_like('email',$search);
+        $this->db->or_like('country',$search);
+        $this->db->or_like('gender',$search);
+        $this->db->or_like('file_path',$search);
+      $this->db->group_end();
+      }
+      
+      $this->db->limit($length,$start);
+      $query= $this->db->get();
+      // echo"<pre>";
+      // print_r( $query->result());
+      return $query->result();
+
+
+
+
+    }
+
+    public function searchDataCount($search)
+    {
+            $this->db->select('COUNT(*) as count');
+            $this->db->from('person');
+
+            if(!empty($search))
+            {
+
+              $this->db->group_start();
+
+                $this->db->like('name',$search);
+                $this->db->or_like('email',$search);
+                $this->db->or_like('country',$search);
+                $this->db->or_like('gender',$search);
+                $this->db->or_like('file_path',$search);
+            $this->db->group_end();
+            }
+          
+            $query= $this->db->get();
+            // echo"<pre>";
+            $result=  $query->row();
+            return $result->count;
+    }
+
+    public function getTotalCount()
+    {
+      return $this->db->count_all('person');
+    }
+
+
+
   }
