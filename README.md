@@ -1,6 +1,8 @@
 # Codeigniter
 # url to open project if wamp/xampp is on:
-# localhost/codeigniter2/index.php/create/index
+# http://localhost/codeigniter3/index.php/create/index
+
+ NOTE: codeigniter3 in url is a folder which contains all the files which is in www folder. It cannot be accessed if folder is not present in computer.
 
  MVC Application(CRUD OPERATION USING -
  1. Frontend- 
