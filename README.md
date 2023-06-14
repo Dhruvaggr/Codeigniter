@@ -12,7 +12,7 @@
 
  3. Database: Mysql (PhpMyadmin, HeidiSql)
 
- ajaxmodel.php is MODEL
- form.php is VIEW
+ ajaxmodel.php is MODEL||
+ form.php is VIEW||
  create.php is CONTROLLER
 
