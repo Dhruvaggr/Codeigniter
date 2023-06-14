@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/css/styles.css?">
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 </head>
 <body>
@@ -13,22 +13,20 @@
 <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
 
+
 <div class="top">
-
-
-        
-       
 <form id="createform" method="post" enctype="multipart/form-data">
+<a href="index"><input id="ref" class='btn' type='button' value='Refresh Page'></input></a>
+
 <!-- <input id="ref" class='btn' type='button' value='Refresh Page'></input><br> -->
-<a href="index"><input id="ref" class='btn' type='button' value='Refresh Page'></input></a><br>
       <h1> Create user </h1>
             <label> <strong>Name</strong> </label><br>
             <input class='input' name='fname' id="nameid" value="" type='text' placeholder='Please write your name'><br>
-            <span id="name_error"></span><br>
+            <!-- <span id="name_error"></span><br> -->
 
             <label> <strong>Email</strong> </label><br>
             <input  class='input' name='email'  id="emailid" value="" type='email' placeholder='Please write your email'><br>
-            <span id="email_error"></span><br>
+            <!-- <span id="email_error"></span><br> -->
 
             <label> <strong>Country</strong></label> <br>
             <select class='drop' name='country' id='country'>
@@ -45,13 +43,6 @@
             <textarea name='text' id="textar"> </textarea><br>
             <input type="file" name="userfile[]" id="userfile" multiple><br>
             <!-- <button type="submit" class="btn btn-primary" id="sub">Submit</button> -->
-            
-
-
-
-
-                
-            
             <input id="buttn" class='btn' name="submit" type='button' value='Insert'> </input>
             <input id="bnn" class='btn' type='button' value='Update'> </input>
            
@@ -61,17 +52,35 @@
             <!-- <a href="#" class='btn' >BACK</a> -->
 </form>
                 <div class="tableContainer">
-                    <h1> Applicants </h1>   
+                    
+                <h1 class="app"> Applicants </h1> 
+                <div id="join">
+                   <label id='filter_label'> Country </label>
+
+                    <select  id='filter_dropdown'>
+                    <option value="All">Select</option>
+
+                    <?php foreach($country as $val) {?>
+                    
+                        <option value="<?=$val->country?>"><?= $val->country?></option>
+                    
+                    
+                    <?php }?>
+                    
+                    </select>
+                    </div>
+  
                             <table class="tb" id="tble">
 
                             <thead> 
                                 
                                     <tr class="row"> 
+                                           
                                             <th> Name </th>
                                             <th>Email </th>
                                             <th>Country </th>
                                             <th> Gender </th>
-                                         <th> File Path</th> 
+                                            <th> File Path</th> 
                                             <th> Bio </th>
                                          
                                             <th> Update </th>
@@ -87,35 +96,204 @@
                 </div>
 </div>
 
+
+
+
 <script>
-          
-             function datatable()
-             {
-                 $('#tble').DataTable();
+
+   
 
 
-            }
+function dataTable(data1)
+      {
+    console.log(data1);
+     var data=[];
+    //    var data =array();
+    //data1 is in object.
+    for(var key=0; key< data1.length; key++ )
+    {
+       var obj ={
+        "name":data1[key].name,
+        "email":data1[key].email,
+        "country":data1[key].country,
+        "gender":data1[key]. gender,
+        "file_path":data1[key].file_path,
+        "bio":data1[key].bio
+       }
+    //     var obj = data1[key];
+    //  console.log(obj.key);
+        data.push(obj);
+    // //    data.push(obj.name);
+    // //    console.log(data);
+       
+    }
+     //console.log(data);
+       
+
          
-    </script> 
+        //    $('#tble').DataTable().destroy();
+            $('#tble').DataTable({
+                'pageLength':10,
+                'order':[],
+                "processing":true,
+                "serverSide":true,
+                "ajax":{
+                    "url":"<?php echo site_url('create/getData')?>",
+                    "type":"POST"
+                    
+            },
+            bDestroy:true
+                
+            
+
+                
+
+            });
+            
+        
+        }
+</script>
+
+
+<script>
+    function myfunc(selcountry)
+    {
+         console.log(selcountry);
+     $("#tble").DataTable({
+   
+        "ajax":{
+              "url":"<?php echo site_url('create/filterList')?>",
+              "type":"POST",
+              "data":{
+                country:selcountry
+            }
+
+          },
+          bDestroy:true
+          
+
+          
 
 
 
-<!-- <script type="text/javascript">
-
-    $(document).ready(function(){
-
-       $('#ref').click(function(){
-            $.ajax({
-               url:"<?php echo site_url("create/index");?>"
-               });
+     });
 
 
-       });
+    }
+function change()
+{
+    // myfunc();
+    $("#filter_dropdown").change(function(){
+        var selcountry = $(this).val();
+        // console.log(selcountry);
+        myfunc(selcountry);
+
+    });
+}
+</script>
+
+<script>
+   
+
+            $("#tble").DataTable({
+                // "dom": '<"select"f>rtip',
+                "initComplete":function(){
+
+                //   $('#filter_dropdown').addClass('drop2');
+                //   $('#filter_label').addClass('lab');
+                       
+                  $('#join').addClass('drop2');
+                 
+
+                   }
+
+            });
+    // }
+     change();
+    </script>
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+<!--     
+<script>
+function dataTable1(data)
+{
+    console.log(data);
+   $('#tble').DataTable().destroy();
+    $('#tble').DataTable({
+        //    'pageLength':10,
+        //   'order':[],
+        //   "processing":true, 
+        //   "serverSide":true,
+        //   "ajax":{
+        //       "url":"<?php echo site_url('create/filterList')?>",
+        //       "type":"POST"
+        //     //   "data":{country:$("#filter_dropdown").val()}
+        //   },
+          
+         
+           "columns":
+           [
+    
+
+              
+              {"data":"name"},
+               {"data":"email"},
+               {"data":"country"},
+               {"data":"gender"},
+               {"data":"file_path"},
+               {"data":"bio"}
+            //    {"data":"update"    , "title":"Update"},
+            //    {"data":"delete"    ,  "title":"Delete"}
+               
+  
+           ],
+           "data":data
+     
+        });
+        // datatable.rows.add(data).draw();     
+  
+    }
 
 
 
-    })
-    </script> -->
+
+             $('#filter_dropdown').on('change',function(){
+
+                 var selectedOption=$(this).val();
+                // // console.log(selectedOption);
+                $.ajax({
+
+                    url: "<?php echo site_url("create/filterList");?>",
+                    method:'POST',
+                    data:{filterOption: selectedOption},
+                    success:function(data)
+                    {
+                        // var data1=JSON.parse(data);
+                        // //console.log(data1);
+                        // $('#tble').DataTable().destroy();
+                         dataTable1(data);
+                        // // $('#tablebody').html(response);
+                        // loadDataTable();
+                    }
+
+
+
+
+
+                });
+
+
+                // datatable1();
+
+             });
+
+
+
+    </script>
+  -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+
 
 <script type="text/javascript">
 
@@ -175,7 +353,7 @@
 </script>
 
 
-<script type="text/javascript">
+ <script type="text/javascript">
 
         $(document).ready(function(){
        
@@ -191,6 +369,7 @@
             // console.log(data);
             populate(data);
 
+
         }
 
          
@@ -201,7 +380,7 @@
 
     });
 
-    </script>
+    </script> 
 
     <!-- This is to dynamically remove or fetch data instatntly -->
     <script type="text/javascript">
@@ -216,20 +395,8 @@
                     success:function(data)
                     {
                              alert('Fetched');
-                            //  console.log(results);
-                            
-                            //  for (var i=0; i<data.length; i++)
-                            //  {
-
-                            //     var filePath= data[i].file_path;
-                            //     var link = $('<a>').attr('href',filePath).text('View File/Image').attr('target','_blank');
-                            //     $('body').append(link);
-                            //     // data=array
-                        
-                                
-                            //     // console.log(data[i]['file_path']);
-                            //  }
-                        console.log(data);
+                           
+                        // console.log(data);
                         populate(data);
 
                     }
@@ -242,47 +409,30 @@
     </script>
 
 
-<!--  
-// console.log(data[i]);
-            //    var row=document.createElement('tr');
-
-            //    var cell1=document.createElement('td');
-            //    cell1.textContent=data[i].name;
-            //    row.appendChild(cell1);
-            // //    console.log(cell1); -->
-            <!-- //    tablebody.appendChild(row);
-
-            
-//  console.log(data[i]);  //  it will give complete array i.e key value pair of all the rows.
-
-//  console.log(data[i]['id']); To get the id of each and every element in database. -->
-
 
 
 
     <script type="text/javascript">
-        function populate(data){
+        function populate(data1){
+   
 
-            //  console.log(data);
-          var tablebody= document.getElementById('tablebody');
-          tablebody.innerHTML="";
-          output="";
+            
+    //           console.log(data1);
+    //       var tablebody= document.getElementById('tablebody');
+    //       tablebody.innerHTML="";
+    //        output="";
         
-          for (var i=0; i<data.length; i++)
-          {  
-            var filePath= data[i].file_path;
-        //    console.log(filePath);
-        output+="<tr><td>"+ data[i].name + 
-        "</td><td>"+data[i].email+
-        "</td><td>"+data[i].country+
-        "</td><td>" + data[i].gender +
-        "</td><td><a href='http://localhost/codeigniter2/pictures/uploads/"+filePath+"'>Image/Document</a></td>" +
-        "</td><td>" +data[i].bio +
-        "</td><td> <button class='update-button' data-id=" + data[i].id +">Update</button></td>"+"<td><button class='delete-button' data-id=" + data[i].id + ">Delete</button></td></tr>"
+    //        for (var i=0; i<data1.length; i++)
+    //        {  
+    //          var filePath= data1[i].file_path;
+    
+        //   output+="<tr><td><a href='http://localhost/codeigniter3/pictures/uploads/"+filePath+"'>Image/Document</a></td>" +
+      
+    //      "</td><td> <button class='update-button' data-id=" + data1[i].id +">Update</button></td>"+"<td><button class='delete-button' data-id=" + data1[i].id + ">Delete</button></td></tr>"
 
-         } 
-       $("#tablebody").html(output);    
-        datatable();
+    //       } 
+    //    $("#tablebody").html(output);    
+      dataTable(data1);
 
        
 
@@ -355,21 +505,12 @@
      $('#tablebody').on("click",".update-button",function()
      {
              $("#buttn").hide();
-        // $('#buttn').click(function(){
-        //       alert("Insert cannot be performed upon update fxn. Reload page to update again.");
-        //             $.ajax({
+      
 
-        //              url: "<?php echo site_url("create/index");?>"
-
-                 
-        //         });
-        // });
-
-
-
-
+         
+      // console.log("DGGGG");
           var id= $(this).data('id');
-        //   console.log(id);
+            console.log(id);
 
         
 
