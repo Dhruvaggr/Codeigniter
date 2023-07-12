@@ -1,5 +1,5 @@
 # Codeigniter
-# url to open project if wamp/xampp is on:
+<h4> CRUD Application using CODEIGNITER framework.</h4>
 
 
  NOTE: codeigniter3 in url is a folder which contains all the files which is in www folder. It cannot be accessed if folder is not present in computer.
